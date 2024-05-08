@@ -12,8 +12,30 @@ For EDA and data engineering, the functions are divided into four parts:
 - `univariate.py`: Functions for univariate statistics
 - `bivariate.py`: Functions for bivariate statistics
 - `cleaning.py`: Functions for data cleaning
+- `timeseries.py`: Funtions for time series analysis and visualization
 
 The explaination for each function may be found in their respective doc string.
+
+## Showcase
+
+### Display Statistics
+
+|index|ADF Statistic|p-value|5% Critical Value|
+|---|---|---|---|
+|Rainfall|-3\.374|0\.012|-2\.867|
+|Temperature|-12\.034|0\.0|-2\.867|
+|Drainage\_Volume|-3\.01|0\.034|-2\.866|
+|River\_Hydrometry|-4\.824|0\.0|-2\.866|
+|Depth\_to\_Groundwater|-2\.88|0\.048|-2\.866|
+
+
+
+
+### Visualization
+
+![](demonstration/decomposition.png)
+![](demonstration/(p)acf.png)
+![](demonstration/arima.png)
 
 ## Usual Pipeline
 
@@ -173,4 +195,34 @@ df_importance= df_importance.sort_values(by=['Importance'], ascending=False)
 sns.barplot(data=df_importance.head(20), x='Feature', y='Importance')
 plt.xticks(rotation=90)
 plt.show()
+```
+
+### ARIMA Model
+
+```python
+  from statsmodels.tsa.arima.model import ARIMA
+
+  score_mae = []
+  score_rsme = []
+
+  for fold, valid_quarter_id in enumerate(range(2, N_SPLITS)):
+      train_index = df[df.quarter_idx < valid_quarter_id].index
+      valid_index = df[df.quarter_idx == valid_quarter_id].index
+
+      y_train, y_valid = y.iloc[train_index], y.iloc[valid_index]
+      
+      model = ARIMA(y_train, order=(1,1,1))
+      model_fit = model.fit()
+      
+      y_valid_pred = model_fit.predict(valid_index[0], valid_index[-1])
+
+      score_mae.append(mean_absolute_error(y_valid, y_valid_pred))
+      score_rsme.append(math.sqrt(mean_squared_error(y_valid, y_valid_pred)))
+
+
+  model = ARIMA(y, order=(1,1,1))
+  model_fit = model.fit()
+
+  y_pred = model_fit.predict(y.index[-1]+1, y.index[-1] + len(y_test)).reset_index(drop=True)
+  plot_approach_evaluation(y_pred, score_mae, score_rsme, 'ARIMA')
 ```
