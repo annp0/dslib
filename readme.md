@@ -133,8 +133,7 @@ models = [
     DecisionTreeRegressor(),
     RandomForestRegressor(),
     AdaBoostRegressor(),
-    GradientBoostingRegressor(),
-    #LogisticRegression()
+    GradientBoostingRegressor()
 ]
 
 scoring = ['neg_mean_squared_error', 'neg_mean_absolute_error']

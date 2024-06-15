@@ -13,7 +13,7 @@ def corr(df):
   - (2) do principle component analysis
   '''
 
-  fig = plt.figure(figsize=(25,20))
+  fig = plt.figure()
   sns.heatmap(df.corr(numeric_only=True), annot=True)
   plt.show()
 

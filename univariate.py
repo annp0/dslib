@@ -18,7 +18,7 @@ def unistats(df):
     else:
       output_df.loc[col] = [df[col].count(), df[col].isnull().sum(), df[col].nunique(),
                             df[col].dtype, df[col].mode()[0], '', '', '', '', '', '']
-
+  
   return output_df
 
 def uniplot(df, features=[]):
